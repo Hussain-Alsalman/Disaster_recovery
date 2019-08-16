@@ -4,6 +4,17 @@ import numpy as np
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    This function load the messages and the categories from a file path determined by the user.
+
+    Args:
+        messages_filepath: a string
+        categories_filepath: a string       
+
+    Returns:
+        df : Pandas DataFrame contains all the merged data  
+    """
+
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     messages= messages.set_index('id')
@@ -12,6 +23,16 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
+    """
+    This function takes a messy data and clean it.
+
+    Args:
+        df: Pandas DataFrame contains all the merged data 
+     
+
+    Returns:
+        df : Pandas DataFrame contains  the cleaned data
+    """        
     categories = df['categories'].str.split(';', expand=True)
     row = categories.iloc[1,:]
     row_splitted= row.str.split('-', expand=True)
@@ -30,6 +51,16 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
+    """
+    This function takes a clean data and store in in SQLite database with name sepecified by the user.
+
+    Args:
+        df: Pandas DataFrame contains  the cleaned data 
+     
+
+    Returns:
+    """  
+
 
     engine = create_engine('sqlite:///' + str(database_filename))
     df.to_sql('T_messeges', engine, index=False)

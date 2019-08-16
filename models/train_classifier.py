@@ -30,6 +30,19 @@ import pickle
 
 def load_data(database_filepath):
 
+    """
+    This function load the data from SQLite database and extract the target variable and all the features as well as the category names. 
+
+    Args:
+        database_filepath: a string
+
+    Returns:
+        X : Pandas Series contains all the messages in string format.
+        Y : Pandas DataFrame contains all the classifications in binary encoding. 
+        category_names : pandas.core.indexes contains all the names of the categories.
+
+    """
+
     engine = create_engine('sqlite:///' + str(database_filepath))
     df = pd.read_sql_table("T_messeges", engine)
     X = df.iloc[:,0]
@@ -63,6 +76,17 @@ def tokenize(text):
 
 def build_model():
 
+    """
+    This function creates a pipeline and search through the best model then create that model and return it. 
+
+    Args:
+         
+
+    Returns:
+        cv : a classification model 
+
+    """
+
     pipeline = Pipeline([
     ('vect', CountVectorizer(tokenizer = tokenize)),
     ('tfidf', TfidfTransformer()),
@@ -77,12 +101,39 @@ def build_model():
 
 def evaluate_model(model, X_test, Y_test, category_names):
 
+    """
+    This function takes the testing data and evaluate the model and print the results. 
+
+    Args:
+        model : a classification model 
+        X_test: Pandas Series of Test features that 
+        Y_test: Pandas DataFrame contains all the test target features .
+        category_names : pandas.core.indexes contains all the names of the categories.
+
+
+    Returns:
+
+    """
+
     pred_y  = model.predict(X= X_test)
 
     print(classification_report(y_pred= pred_y, y_true= Y_test.values, target_names = Y_test.columns))
 
 
 def save_model(model, model_filepath):
+
+    """
+    This function takes the model and export it into a pickle file at the specified file path. 
+
+    Args:
+        model : a classification model 
+        model_filepath: a string that contains the file path 
+        Y_test: Pandas DataFrame contains all the test target features .
+        category_names : pandas.core.indexes contains all the names of the categories.
+
+
+    Returns:
+    """
 
     pickle.dump(model, open(model_filepath, 'wb'))
 
